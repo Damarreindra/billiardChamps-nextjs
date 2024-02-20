@@ -2,25 +2,17 @@
 import React, { useState } from 'react';
 import { Flex, Text, FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
 import Image from 'next/image';
-import { app } from '@/app/lib/firebaseConfig';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-import { useRouter } from 'next/router';
+import { login } from '@/app/lib/actions';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-const router = useRouter()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const auth = getAuth(app)
     try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log('Login successful', response);
-      revalidatePath('/home')
-      router.push('/home'); 
+      await login({ email, password });
     } catch (error:any) {
       setError(error.message);
     }
